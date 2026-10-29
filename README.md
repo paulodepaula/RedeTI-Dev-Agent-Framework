@@ -14,13 +14,16 @@ Framework compartilhado para colaborar entre ChatGPT (autor de codigo, scripts e
 
 Autonomia operacional para tarefas comuns. Alteracoes permanentes de cognicao, permissões de tools, skills, regras de contexto e rotinas exigem aprovacao explicita. Segredos nunca sao versionados. A divisao de responsabilidades e regra aprovada do projeto, nao instrucao para contornar permissões locais.
 
-## Estrutura planejada
+## Estrutura implementada
 
 - `AGENTS.md`: politica compartilhada.
 - `skills/redeti-next/SKILL.md`: protocolo nativo Hermes `next`.
-- `scripts/next_bridge.py`: bridge configuravel por repositorio.
-- `templates/`: arquivos para iniciar novos projetos.
+- `scripts/next_bridge.py`: bridge multi-projeto que detecta origin via git, consulta fila e valida SHA remoto.
+- `templates/`: AGENTS.md e modelo de Issue para novos projetos.
 - `docs/CHANGE_PROCESS.md`: como propagar melhorias para framework e projetos.
 - `CHANGELOG.md`: historico de versoes e evolucoes.
 
-> O framework foi iniciado a partir do metodo aplicado no projeto RedeTI Vault. A implementacao generica e os testes interprojetos serao realizados por etapas; nao assumir que todo projeto ja possui integracao ativa.
+> Skill global, instalador, bridge e testes unitarios estao versionados. Validacao real no Hermes e homologacao entre varios repositorios ainda pendentes. Ver docs/INSTALL.md.
+
+## Instalação
+Consulte `docs/INSTALL.md` para instalar a skill global no Hermes. Cada projeto usa seu proprio GitHub origin; nao copiar credenciais ou configuracoes entre repositorios.
