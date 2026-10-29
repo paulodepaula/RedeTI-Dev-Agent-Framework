@@ -1,0 +1,3 @@
+interface:
+  display_name: "RedeTI NEXT"
+  short_description: "Sincronizar, testar e homologar projetos GitHub com o Hermes."
