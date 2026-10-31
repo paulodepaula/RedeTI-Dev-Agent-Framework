@@ -1,9 +1,16 @@
 ---
 name: redeti-next
-description: Executar next ou /redeti-next no chat do Hermes para sincronizar e homologar entregas do ChatGPT em qualquer projeto GitHub, identificar o repositorio corrente e relatar testes e SHA remoto.
+description: Quando o usuario digitar apenas next (ou /redeti-next) no chat do Hermes, executar o fluxo completo de uma Issue HERMES NEXT ate publicar o relatorio; nunca parar na descoberta da fila.
 ---
 
 # RedeTI NEXT — Skill global do Hermes
+
+## Gatilho obrigatorio no chat nativo
+
+Se a mensagem do usuario for somente `next` (ignorar espacos e diferencas entre maiusculas e minusculas), **tratar como invocacao desta Skill**. Executar imediatamente os passos 1 a 11 em sequencia, sem exigir `/redeti-next`, copiar prompts ou pedir uma segunda confirmacao. O `fetch` e apenas a etapa de descoberta; **`status: ready` exige continuar a sincronizacao, homologacao e `report` na mesma rodada do agente**. Somente responder depois de publicar relatorio, ou informar claramente impedimento impeditivo (p.ex. checkout ausente, permissao ou acao nao autorizada). Nao executar em background, cron ou processo autonomo.
+
+**Limite de integracao:** esta instrucao depende de o Hermes realmente carregar e despachar a Skill no chat. Um script Python isolado nao inicia o agente conversacional. Confirmar em teste real que `next` e reconhecido pela interface e que o agente nao para no retorno JSON do bridge.
+
 
 Objetivo: Hermes realiza exclusivamente pull, instalacao, configuracao autorizada, testes, diagnostico e homologacao de codigo previamente gerado e publicado pelo ChatGPT. Nao escrever codigo, scripts ou conteudo do produto.
 
