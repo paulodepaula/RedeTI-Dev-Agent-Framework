@@ -11,7 +11,9 @@ python3 -m unittest discover -s tests -v
 
 Se o repo ja existir, atualizar com `git pull --ff-only` em vez de clonar. A instalacao cria dois links em `~/.hermes` e preserva qualquer skill preexistente que nao seja symlink. Ao migrar a skill anterior do Vault, substitui somente o symlink `redeti-next`.
 
-Abra a sessao do Hermes dentro do checkout do projeto e invoque `/redeti-next`. Como mensagem livre `next`, o reconhecimento depende de o contexto do projeto ter carregado `AGENTS.md`; `/redeti-next` e o comando explicito.
+Abra a sessao do Hermes dentro do checkout do projeto e digite apenas `next`. O Hermes deve reconhecer a Skill global e completar fetch -> pull -> testes/homologacao -> report -> resposta. **Importante:** reconhecimento da palavra `next` depende do roteamento de mensagens/Skills no Hermes; a instalacao de arquivos nao garante que um texto livre seja despachado. Se o Hermes responder apenas com `status: ready`, conferir carregamento da Skill e instrucao no contexto da sessao (ou usar `/redeti-next` apenas como teste diagnostico). Nunca confundir descoberta com execucao.
+
+Teste de aceite: estando no checkout redeti_vault, digitar `next` UMA vez e observar Issue #13 homologada ou relatorio de falha publicado; nao executar codigo da Issue por simples `fetch`.
 
 O bridge detecta o projeto pelo `origin` GitHub do checkout, nao e necessario editar strings fixas. Autenticacao `gh` e acesso ao projeto precisam existir. Nenhum segredo e gravado pelo framework.
 
