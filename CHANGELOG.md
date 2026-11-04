@@ -1,3 +1,9 @@
+## Unreleased — piloto de autonomia em simulacao (2026-11-03)
+- Monitor de Issues multi-projeto, exclusivo para leitura e modo `simulate`.
+- Validacao de repositorio, checkout, autor, label, branch e SHA, lock local e timeout de consulta.
+- Testes unitarios, configuracao de exemplo e arquivos systemd preparados mas nunca ativados automaticamente.
+- Execucao real do Hermes adiada para homologacao especifica.
+
 # Changelog
 
 ## 0.2.0 — 2026-10-29
