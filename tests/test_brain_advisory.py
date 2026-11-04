@@ -17,6 +17,7 @@ class BrainAdvisoryTests(unittest.TestCase):
         return {
             "schema": "redeti-brain-orchestrator/v1",
             "owner": "paulodepaula",
+            "private_repositories_included": False,
             "execution_authorized": authorized,
             "hermes_execution_triggered": False,
             "github_write_actions": False,
