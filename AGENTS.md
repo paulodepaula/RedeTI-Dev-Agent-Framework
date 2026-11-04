@@ -25,3 +25,6 @@ Desenvolver, testar, corrigir e homologar software com autonomia operacional e e
 - Melhorias especificas de produto ficam no proprio produto; se forem generalizaveis, abrir proposta de promocao ao framework.
 - Nao alterar silenciosamente regras em outros projetos: avaliar compatibilidade e exigencias de aprovacao.
 - O framework e a fonte de verdade para o metodo compartilhado; cada projeto preserva suas decisoes de arquitetura e contexto local.
+
+## Piloto autonomo autorizado para desenvolvimento (2026-11-03)
+Aprovado implementar e testar um monitor de consulta a Issues a cada 60 segundos em modo exclusivamente simulado, sem ativar implantacoes reais. A skill `redeti-next` continua manual e sua proibicao de execucao em background permanece valida. A extensao futura de execucao real depende de integracao validada ao runtime Hermes, protecao contra duplicacao, auditoria, regras de autorizacao e aprovacao para ativacao. Nao iniciar servicos autonomos em producao nesta etapa.
