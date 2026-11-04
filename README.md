@@ -27,3 +27,7 @@ Autonomia operacional para tarefas comuns. Alteracoes permanentes de cognicao, p
 
 ## Instalação
 Consulte `docs/INSTALL.md` para instalar a skill global no Hermes. Cada projeto usa seu proprio GitHub origin; nao copiar credenciais ou configuracoes entre repositorios.
+
+## Piloto de monitoramento autonomo (somente simulacao)
+
+O arquivo `scripts/autonomy_watcher.py` consulta Issues de uma lista explicita de repositorios e registra apenas eventos `would_dispatch`. Nao invoca Hermes, nao executa deploy e nao modifica Issues. Timer systemd opcional de 60 segundos permanece desativado ate instalacao e homologacao deliberadas. Veja `docs/AUTONOMY_PILOT.md`. A skill `redeti-next` continua manual, sem mudanca em sua politica de execucao.
