@@ -32,15 +32,24 @@ def issue_ok(i, owner):
             and i.get("author", {}).get("login", "").casefold() == owner.casefold())
 
 
-def fetch(repo):
+def fetch(repo, issue_number=None):
     owner = repo.split("/")[0]
-    issues = json.loads(run(["gh", "issue", "list", "-R", repo, "--state", "open",
-                             "--label", LABEL, "--limit", "100",
-                             "--json", "number,title,body,url,author"]))
-    eligible = sorted((i for i in issues if issue_ok(i, owner)), key=lambda x: x["number"])
-    if not eligible:
-        return {"status": "empty", "repo": repo}
-    i = eligible[0]
+    if issue_number is not None:
+        i = json.loads(run(["gh", "issue", "view", str(issue_number), "-R", repo,
+                            "--json", "number,title,body,url,author,state,labels"]))
+        labels = [label.get("name") for label in i.get("labels", [])]
+        if (i.get("state") != "OPEN" or not issue_ok(i, owner)
+                or LABEL not in labels or i.get("number") != issue_number):
+            return {"status": "blocked", "repo": repo, "issue": issue_number,
+                    "reason": "requested issue is not eligible"}
+    else:
+        issues = json.loads(run(["gh", "issue", "list", "-R", repo, "--state", "open",
+                                 "--label", LABEL, "--limit", "100",
+                                 "--json", "number,title,body,url,author"]))
+        eligible = sorted((i for i in issues if issue_ok(i, owner)), key=lambda x: x["number"])
+        if not eligible:
+            return {"status": "empty", "repo": repo}
+        i = eligible[0]
     return {"status": "ready", "repo": repo, "issue": i["number"], "title": i["title"],
             "body": i["body"], "url": i["url"]}
 
@@ -87,7 +96,8 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--project", default=".", help="Local checkout directory")
     sub = p.add_subparsers(dest="action", required=True)
-    sub.add_parser("fetch")
+    fetch_parser = sub.add_parser("fetch")
+    fetch_parser.add_argument("--issue", type=int, help="fetch one explicitly selected Issue")
     r = sub.add_parser("report")
     r.add_argument("--issue", type=int, required=True)
     r.add_argument("--status", choices=["success", "failed"], required=True)
@@ -97,7 +107,7 @@ def main():
     a = p.parse_args()
     try:
         root, repo = project(a.project)
-        output = fetch(repo) if a.action == "fetch" else report(
+        output = fetch(repo, issue_number=a.issue) if a.action == "fetch" else report(
             root, repo, a.issue, a.status, a.branch, a.commit, a.summary)
         print(json.dumps(output, ensure_ascii=False, indent=2))
     except (ValueError, RuntimeError, OSError, json.JSONDecodeError, UnicodeError) as e:
