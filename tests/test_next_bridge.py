@@ -20,7 +20,9 @@ class BridgeTests(unittest.TestCase):
             {"number": 2, "title": "[HERMES NEXT] A", "author": {"login": "owner"}, "body": "A", "url": "2"},
         ]
         with patch.object(bridge, "run", return_value=__import__("json").dumps(issues)):
-            self.assertEqual(bridge.fetch("owner/proj")["issue"], 2)
+            with patch.object(bridge, "brain_advisory", return_value={
+                "status": "unavailable", "advisory_only": True, "execution_authorized": False}):
+                self.assertEqual(bridge.fetch("owner/proj")["issue"], 2)
         with patch.object(bridge, "run", return_value="[]"):
             self.assertEqual(bridge.fetch("owner/proj")["status"], "empty")
 
