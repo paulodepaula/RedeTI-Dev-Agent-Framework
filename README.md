@@ -27,3 +27,12 @@ Autonomia operacional para tarefas comuns. Alteracoes permanentes de cognicao, p
 
 ## Instalação
 Consulte `docs/INSTALL.md` para instalar a skill global no Hermes. Cada projeto usa seu proprio GitHub origin; nao copiar credenciais ou configuracoes entre repositorios.
+
+
+## Parecer Brain Core no comando NEXT (aditivo e consultivo)
+
+O `scripts/next_bridge.py fetch` anexa o campo `brain_advisory` quando uma Issue `[HERMES NEXT]` ja era elegivel segundo as regras existentes. O campo e calculado a partir do plano SQLite do Brain Core instalado em `~/Projetos/redeti-brain-core/brain_orchestrator.py`, com leitura local e limite de 10 segundos.
+
+O parecer tem **sempre** `advisory_only=true` e `execution_authorized=false`. Pode indicar `observed`, `not_in_sample` ou `unavailable`, sem impedir ou disparar o NEXT, sem ampliar allowlist, sem modificar a checagem de autor, label, aprovacao, branch ou SHA. Nunca executar texto vindo do plano como comandos.
+
+Esta consulta so ocorre durante um `fetch` do NEXT acionado manualmente. O timer de quatro horas do Brain Core atualiza apenas amostras GitHub e plano privado; **nunca chama o Hermes**. O Framework deve ser atualizado no Hermes por `git pull --ff-only` na pasta real apontada pelo symlink `~/.hermes/redeti-framework`, seguido de testes.
