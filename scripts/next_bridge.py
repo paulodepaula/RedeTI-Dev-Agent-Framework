@@ -55,6 +55,8 @@ def brain_advisory(repo, issue_number):
                 or not isinstance(data.get("backlog"), list)):
             return unavailable
         for task in data["backlog"]:
+            if not isinstance(task, dict):
+                return unavailable
             if task.get("repository") == repo and task.get("number") == issue_number:
                 state = task.get("state")
                 priority = task.get("priority")
