@@ -47,7 +47,9 @@ def brain_advisory(repo, issue_number):
         if process.returncode or len(process.stdout) > 1024 * 1024:
             return unavailable
         data = json.loads(process.stdout)
-        if (data.get("schema") != "redeti-brain-orchestrator/v1"
+        if (not isinstance(data, dict)
+                or data.get("schema") != "redeti-brain-orchestrator/v1"
+                or data.get("private_repositories_included") is not False
                 or data.get("owner") != owner
                 or data.get("execution_authorized") is not False
                 or data.get("hermes_execution_triggered") is not False
