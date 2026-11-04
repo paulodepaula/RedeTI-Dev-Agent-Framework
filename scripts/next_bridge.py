@@ -32,6 +32,47 @@ def issue_ok(i, owner):
             and i.get("author", {}).get("login", "").casefold() == owner.casefold())
 
 
+def brain_advisory(repo, issue_number):
+    """Optional local advice; never part of NEXT eligibility or execution gates."""
+    unavailable = {"status": "unavailable", "advisory_only": True, "execution_authorized": False}
+    tool = pathlib.Path.home() / "Projetos" / "redeti-brain-core" / "brain_orchestrator.py"
+    if not tool.is_file() or tool.is_symlink():
+        return unavailable
+    owner = repo.split("/", 1)[0]
+    try:
+        process = subprocess.run(
+            [sys.executable, "-B", str(tool), "plan", "--owner", owner, "--format", "json"],
+            capture_output=True, text=True, timeout=10, check=False,
+        )
+        if process.returncode or len(process.stdout) > 1024 * 1024:
+            return unavailable
+        data = json.loads(process.stdout)
+        if (data.get("schema") != "redeti-brain-orchestrator/v1"
+                or data.get("owner") != owner
+                or data.get("execution_authorized") is not False
+                or data.get("hermes_execution_triggered") is not False
+                or data.get("github_write_actions") is not False
+                or not isinstance(data.get("backlog"), list)):
+            return unavailable
+        for task in data["backlog"]:
+            if task.get("repository") == repo and task.get("number") == issue_number:
+                state = task.get("state")
+                priority = task.get("priority")
+                if state not in ("ready_for_review", "dependency_pending",
+                                 "dependency_unknown", "blocked_by_label",
+                                 "stale_snapshot", "archived"):
+                    return unavailable
+                if priority not in ("critical", "high", "normal", "low", "unclassified"):
+                    return unavailable
+                return {"status": "observed", "review_state": state,
+                        "priority_hint": priority, "advisory_only": True,
+                        "execution_authorized": False}
+        return {"status": "not_in_sample", "advisory_only": True,
+                "execution_authorized": False}
+    except (OSError, ValueError, TypeError, subprocess.TimeoutExpired, json.JSONDecodeError):
+        return unavailable
+
+
 def fetch(repo):
     owner = repo.split("/")[0]
     issues = json.loads(run(["gh", "issue", "list", "-R", repo, "--state", "open",
@@ -42,7 +83,8 @@ def fetch(repo):
         return {"status": "empty", "repo": repo}
     i = eligible[0]
     return {"status": "ready", "repo": repo, "issue": i["number"], "title": i["title"],
-            "body": i["body"], "url": i["url"]}
+            "body": i["body"], "url": i["url"],
+            "brain_advisory": brain_advisory(repo, i["number"])}
 
 
 def verified_sha(root, branch, expected):
